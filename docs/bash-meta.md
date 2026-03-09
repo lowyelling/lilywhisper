@@ -50,3 +50,26 @@ AppleScript is why lilywhisper can paste into *any* app — it's not interacting
 The fragmentation is the tradeoff. macOS controls the whole stack (OS, window manager, app framework), so Apple can mandate "every app must respond to AppleScript." Linux doesn't have that authority — different desktops (GNOME, KDE, etc.), different display servers (X11, Wayland), different app toolkits. More freedom, less guaranteed interop.
 
 If you ever ported lilywhisper to Linux, you'd swap two lines: `pbcopy` → `xclip` or `wl-copy`, and the `osascript` line → `xdotool key ctrl+v`.
+
+## What is a shebang line?
+
+The `#!` at the top of a script — pronounced "shebang" (or "hashbang"). In lilywhisper:
+
+```bash
+#!/bin/bash
+```
+
+It tells the OS **which program should interpret this file**. When you run `./lilywhisper.sh`, the OS reads that first line and thinks: "oh, I should hand this file to `/bin/bash` to execute."
+
+Without it, the OS doesn't know what to do with the file. Is it Python? Ruby? Bash? The shebang answers that question.
+
+Some common shebangs:
+
+- `#!/bin/bash` — run with bash
+- `#!/usr/bin/env python3` — run with python3 (the `env` version searches your PATH, more portable)
+- `#!/bin/zsh` — run with zsh
+- `#!/usr/bin/env node` — run with Node.js
+
+The name "shebang" comes from combining **sh**arp (`#`) and **bang** (`!`). It's one of those Unix conventions that's been around since the early 1980s.
+
+One subtlety: it only matters when you run the script directly (`./lilywhisper.sh`). If you run `bash lilywhisper.sh`, you're explicitly telling it to use bash, so the shebang is ignored.
