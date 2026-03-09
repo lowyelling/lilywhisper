@@ -52,8 +52,10 @@ while true; do
 
     echo "Got: $TRANSCRIPTION"
 
-    # Copy to clipboard and paste
+    # Copy to clipboard, give you 3 seconds to click into another app, then paste
     echo -n "$TRANSCRIPTION" | pbcopy
+    echo "Pasting in 3 seconds — click into the app where you want the text..."
+    sleep 3
     osascript -e 'tell application "System Events" to keystroke "v" using command down'
 
     # Save to history

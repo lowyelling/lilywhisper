@@ -83,3 +83,18 @@ On Unix systems, any file or folder starting with `.` is hidden from normal `ls`
 Your home directory is full of these: `~/.zshrc`, `~/.claude/`, `~/.config/`, `~/.git/`. They're all configuration or data folders that apps create for themselves. The convention is: if it's for the *program* and not for the *human*, make it a dotfile.
 
 So `~/.voice-history/` is just lilywhisper's way of saying "I'll keep my logs here, out of your way." You can `ls -a ~` to see it, `cat` the files inside, delete it — nothing hidden about it beyond the dot.
+
+## Can I just run `bash lilywhisper.sh` instead of `cd ~/dev/lilywhisper && ./lilywhisper.sh`?
+
+Yes. `bash lilywhisper.sh` works from any directory — as long as you give it the right path. So from your home directory:
+
+```bash
+bash ~/dev/lilywhisper/lilywhisper.sh
+```
+
+The difference between the two approaches:
+
+- **`bash lilywhisper.sh`** — you're explicitly telling it "use bash to run this file." The shebang is ignored. The file doesn't need to be executable (`chmod +x`).
+- **`./lilywhisper.sh`** — you're asking the OS to run it directly. The OS reads the shebang to figure out what interpreter to use. The file *must* be executable.
+
+Both do the same thing in this case. The `cd && ./` pattern is only necessary if the script relies on being run from its own directory (like referencing relative file paths). lilywhisper doesn't — all its paths are absolute (`/opt/homebrew/...`, `/tmp/...`, `$HOME/...`), so it works from anywhere.

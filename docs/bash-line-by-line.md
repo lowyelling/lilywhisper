@@ -137,21 +137,24 @@ fi
 
 `-z` tests if the string is empty. If Whisper returned nothing (silence, noise), skip the rest and loop back. `continue` jumps to the top of the `while` loop.
 
-### Paste into Active App (Lines 53–57)
+### Paste into Active App (Lines 53–59)
 
 ```bash
 echo "Got: $TRANSCRIPTION"
 
 echo -n "$TRANSCRIPTION" | pbcopy
+echo "Pasting in 3 seconds — click into the app where you want the text..."
+sleep 3
 osascript -e 'tell application "System Events" to keystroke "v" using command down'
 ```
 
-Two-step paste:
+Three-step paste:
 
 1. **`pbcopy`** — macOS clipboard. `echo -n` prevents a trailing newline.
-2. **`osascript`** — tells macOS to simulate Cmd+V via AppleScript. This pastes wherever your cursor currently is — any app, any text field.
+2. **`sleep 3`** — waits 3 seconds, giving you time to click into the app where you want the text. Without this, the paste would fire immediately in the terminal window.
+3. **`osascript`** — tells macOS to simulate Cmd+V via AppleScript. This pastes wherever your cursor currently is — any app, any text field.
 
-### Save to History (Lines 60–61)
+### Save to History (Lines 62–63)
 
 ```bash
 TODAY="$HISTORY_DIR/$(date +%Y-%m-%d).md"
