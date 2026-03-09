@@ -73,3 +73,13 @@ Some common shebangs:
 The name "shebang" comes from combining **sh**arp (`#`) and **bang** (`!`). It's one of those Unix conventions that's been around since the early 1980s.
 
 One subtlety: it only matters when you run the script directly (`./lilywhisper.sh`). If you run `bash lilywhisper.sh`, you're explicitly telling it to use bash, so the shebang is ignored.
+
+## Is `.voice-history` a secret hidden folder?
+
+Half right. The folder *is* created by the `mkdir -p "$HISTORY_DIR"` line. But it's not secret — it's just a **dotfile convention**.
+
+On Unix systems, any file or folder starting with `.` is hidden from normal `ls` output. You need `ls -a` to see them. That's it — there's no special permission or encryption. It's just "don't clutter up the user's home directory with stuff they don't need to see day-to-day."
+
+Your home directory is full of these: `~/.zshrc`, `~/.claude/`, `~/.config/`, `~/.git/`. They're all configuration or data folders that apps create for themselves. The convention is: if it's for the *program* and not for the *human*, make it a dotfile.
+
+So `~/.voice-history/` is just lilywhisper's way of saying "I'll keep my logs here, out of your way." You can `ls -a ~` to see it, `cat` the files inside, delete it — nothing hidden about it beyond the dot.
