@@ -192,3 +192,36 @@ So when you write `done`, you're typing what `}` means in JavaScript. Same delim
 - **Go, Rust, Swift** — all chose braces because that's what developers expect now
 
 It's path dependence. C made a reasonable local choice (fewer keystrokes), then network effects locked it in. Python was the major rebellion — Guido van Rossum said "you're already indenting for readability, so just make the indentation *be* the syntax." That was a genuinely different idea. Bash's word-delimiters are the older tradition that C displaced.
+
+## What does `$TODAY` do?
+
+`$TODAY` is variable expansion — bash replaces it with the value assigned on the line above:
+
+```bash
+TODAY="$HISTORY_DIR/$(date +%Y-%m-%d).md"
+echo -e "\n## $(date +%H:%M:%S)\n$TRANSCRIPTION" >> "$TODAY"
+```
+
+So `$TODAY` resolves to something like `~/.voice-history/2026-03-09.md`. It's the full file path.
+
+The `$` is how bash says "give me the value of this variable." Without it, `TODAY` is just the literal string "TODAY". With it, `$TODAY` becomes `/Users/lilyluo/.voice-history/2026-03-09.md`.
+
+Same thing happens with `$TRANSCRIPTION`, `$RECORDING`, `$WHISPER_MODEL` — all the variables in the script. The `$` is the "unwrap" operator.
+
+## Is bash's `$VAR` similar to JavaScript's `${}` template literals?
+
+Yes, same idea. Both say "evaluate this variable and insert its value here."
+
+| | Syntax | Example |
+|---|---|---|
+| **Bash** | `$VAR` or `${VAR}` | `"Hello $NAME"` |
+| **JavaScript** | `${var}` (inside backticks) | `` `Hello ${name}` `` |
+
+Bash actually has both forms too. `$VAR` works on its own, but `${VAR}` is needed when the variable name would be ambiguous:
+
+```bash
+echo "$VARs"    # bash looks for a variable called VARs
+echo "${VAR}s"  # bash looks for VAR, then appends "s"
+```
+
+JavaScript *requires* the braces and backticks every time. Bash lets you skip the braces when the context is unambiguous — which is most of the time, which is why lilywhisper just uses `$TODAY` instead of `${TODAY}`.
