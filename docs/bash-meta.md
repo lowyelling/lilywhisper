@@ -98,3 +98,97 @@ The difference between the two approaches:
 - **`./lilywhisper.sh`** — you're asking the OS to run it directly. The OS reads the shebang to figure out what interpreter to use. The file *must* be executable.
 
 Both do the same thing in this case. The `cd && ./` pattern is only necessary if the script relies on being run from its own directory (like referencing relative file paths). lilywhisper doesn't — all its paths are absolute (`/opt/homebrew/...`, `/tmp/...`, `$HOME/...`), so it works from anywhere.
+
+## Do all bash `while` loops need `while`, `do`, `done`?
+
+Yes. That's the structure:
+
+```bash
+while <condition>; do
+    # body
+done
+```
+
+`while` sets the condition, `do` opens the body, `done` closes it. All three are required. Same pattern for `for` and `until` loops — they all use `do`/`done`.
+
+In lilywhisper, `while true` means the condition is always true, so it loops forever. `true` is actually a real command in Unix — it does nothing and exits with status 0 (success). So `while true; do` means "keep looping as long as `true` succeeds," which is always.
+
+The `;` before `do` is just a separator so you can put them on one line. You could also write it as:
+
+```bash
+while true
+do
+    # body
+done
+```
+
+Same thing. The semicolon replaces the newline.
+
+## How is bash's `while` different from JavaScript and Python?
+
+The logic is the same — "keep running while this is true." The syntax reflects each language's style:
+
+**JavaScript:**
+
+```javascript
+while (condition) {
+    // body
+}
+```
+
+Curly braces `{}` open and close the body. Parentheses around the condition.
+
+**Python:**
+
+```python
+while condition:
+    # body
+```
+
+Colon + indentation. No closing keyword, no braces. Python trusts whitespace to define the block.
+
+**Bash:**
+
+```bash
+while condition; do
+    # body
+done
+```
+
+Keywords `do`/`done` open and close the body. Bash is the oldest of the three — it comes from an era (1970s-80s) where shells used English words as delimiters instead of symbols.
+
+| | Opens block | Closes block | Condition wrapper |
+|---|---|---|---|
+| **JavaScript** | `{` | `}` | `( )` |
+| **Python** | `:` + indent | dedent | nothing |
+| **Bash** | `do` | `done` | nothing |
+
+Bash's `if` follows the same English-keyword pattern: `if ... then ... fi` (`fi` is `if` backwards). Same idea as `do`/`done` — words instead of braces.
+
+## What does "words as delimiters instead of symbols" mean?
+
+Early shell languages chose readable English words to mark where code blocks start and end. So instead of `{` and `}`, bash uses `do` and `done`. Instead of `}` to close an `if`, it uses `fi`.
+
+It's the same job — the computer needs to know "where does this block begin" and "where does it end." The three approaches:
+
+- **Symbols:** `{ }` (JavaScript, C, Java, Go, Rust)
+- **Words:** `do`/`done`, `then`/`fi`, `case`/`esac` (Bash, old shells)
+- **Whitespace:** indentation (Python)
+
+Bash inherited this from the **Bourne shell** (1979), which was influenced by ALGOL — an academic language from the 1960s that used `begin`/`end` instead of braces. The thinking was that words are more readable than punctuation. C went the other direction with `{ }`, and most modern languages followed C.
+
+So when you write `done`, you're typing what `}` means in JavaScript. Same delimiter job, different costume.
+
+## Why did C choose braces, and why did other languages follow?
+
+**Why C chose braces:** Dennis Ritchie and Ken Thompson were building Unix at Bell Labs in the early 1970s. They were writing *a lot* of code — an entire operating system. Typing `begin`/`end` hundreds of times a day is slow. `{` and `}` are one keystroke each. When you're writing systems code all day, that economy adds up. C was a practical tool for people who typed code for a living, not an academic language for publishing papers.
+
+**Why everyone followed C:** Because C won the 1980s. Unix spread through universities, C became the language everyone learned, and its syntax became what "code looks like" in people's heads. Then:
+
+- **C++ (1979)** — extended C, kept the braces
+- **Java (1995)** — explicitly designed to look like C/C++ so those programmers would adopt it
+- **JavaScript (1995)** — Brendan Eich was told to make it "look like Java," so braces again
+- **C# (2000)** — Microsoft's answer to Java, same syntax family
+- **Go, Rust, Swift** — all chose braces because that's what developers expect now
+
+It's path dependence. C made a reasonable local choice (fewer keystrokes), then network effects locked it in. Python was the major rebellion — Guido van Rossum said "you're already indenting for readability, so just make the indentation *be* the syntax." That was a genuinely different idea. Bash's word-delimiters are the older tradition that C displaced.
