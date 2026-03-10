@@ -58,6 +58,22 @@ The assignment says Gemma is "strong math." Asked why that matters if models can
 
 The things that actually matter for a small local model — instruction following, coherent prose, domain-specific performance — are harder to benchmark and harder to market. So math scores become a proxy for "this model is smart."
 
+## First local model run: Gemma 3 4B
+
+Loaded Gemma 3 4B in LM Studio. Machine froze briefly — Spotify cut out, mouse locked up. 8GB RAM is tight. The model is ~3GB and the OS needs RAM for everything else.
+
+**Hardware reality on 8GB:** 1-3B models run comfortably. 4B if you close other apps. 7B+ is off the table locally. This is why the assignment covers hosted APIs (Groq, Together AI) — not everyone has hardware for meaningful local inference.
+
+**Performance:** 173 tokens in 13.46 seconds = ~13 tok/s. Slow because RAM is maxed. A machine with headroom would do 40-80 tok/s. Groq would do it in under a second.
+
+**Sycophancy:** The response was aggressively enthusiastic ("That's fantastic to hear!" / "I'm eager!" / emojis). Smaller models tend to be more people-pleasing — they're fine-tuned on chat data where enthusiasm gets positive ratings.
+
+**Can models explain their own training data?** Gemma confidently said "I was trained with a strong emphasis on mathematical reasoning" and attributed it to "a massive dataset that included mathematical text." Initial reaction: this is confabulation (the model generating plausible text about itself).
+
+But pushed on this — Claude can also talk about its training, because Anthropic has published that information, and that published info is in Claude's training data. Same for Gemma — Google published about Gemma's training. So models *can* retrieve real published facts about themselves.
+
+The honest answer: models can repeat things their creators published, but can't introspect on their own weights or training process. They're pattern-matching on text about themselves, same as any other topic. Neither the model nor the reader can easily distinguish "I'm recalling a fact" from "I'm generating something that sounds right." The confidence and specificity of the claim is what makes it suspect, not the claim itself.
+
 ### Don't bother with
 
 **SOC 2** — Compliance certification for businesses. Just means "some industries legally can't send data to cloud APIs," which is why local models matter for them.
