@@ -74,6 +74,43 @@ But pushed on this — Claude can also talk about its training, because Anthropi
 
 The honest answer: models can repeat things their creators published, but can't introspect on their own weights or training process. They're pattern-matching on text about themselves, same as any other topic. Neither the model nor the reader can easily distinguish "I'm recalling a fact" from "I'm generating something that sounds right." The confidence and specificity of the claim is what makes it suspect, not the claim itself.
 
+## Josh's blog + feedback
+
+Classmate Josh wrote up his day 1: local Ollama, Modal deployment, Groq benchmarking. Key finding: Groq was 6x cheaper and 20x faster than Modal for pure inference on the same model (GPT-OSS 20B). But Modal gives you full control — you can fine-tune, choose your model version, scale infrastructure. Groq is inference-only.
+
+Gave him feedback: too many exclamations, code snippets should be actual code not JPEGs with inline comments, explain what an API key means for less technical readers, link to his Gaussian splats project, needs a conclusion. Also flagged that Claude can't fetch his blog (client-side rendered) which is also an SEO problem.
+
+His blog fetched empty. Mine (lowyelling.com) fetched fine — likely because mine is server-rendered/static and his is client-side rendered (JS builds the page in the browser, so crawlers see an empty shell).
+
+## "Attention Is All You Need" — why the paper matters
+
+Before 2017, language models processed words **sequentially** — one after another, in order. The dominant architectures (RNNs, LSTMs) had "attention" bolted on as a helper, but the core was still sequential.
+
+The paper's insight: throw away sequential processing entirely. **Attention alone is sufficient.** Let every word look at every other word simultaneously and figure out which ones are relevant to each other. No more one-at-a-time.
+
+The result: the **Transformer** architecture. Every modern LLM is built on it — GPT (the T = Transformer), Claude, Llama, Gemma, all of them.
+
+Why it worked: sequential processing is slow (finish word 1 before starting word 2) and forgetful (by word 500, your memory of word 1 has degraded). Attention processes all positions in parallel and connects any word to any other word regardless of distance. This is also why GPUs became essential — parallel processing is what GPUs do.
+
+### The PageRank analogy
+
+Same structural move as Google's search insight. Both replace a handcrafted sequential process with a mechanism that lets the data organize itself through relationships.
+
+- **PageRank:** Stop having editors rank websites. Let the link structure of the web determine importance. The web already knows what matters — listen to its structure.
+- **Attention:** Stop processing language word-by-word in order. Let every word attend to every other word. The sentence already contains the information about which words relate to which — let them find each other.
+
+Both were bottlenecked by forcing sequential, top-down processing onto something that's fundamentally a network. Both breakthroughs came from trusting relational structure over imposed ordering.
+
+The tradeoff rhymes too. PageRank made search scalable but gameable (SEO). Attention made language models powerful but expensive (every word attending to every other word grows quadratically — that's why context windows have limits and longer prompts cost more).
+
+### Connection to the friend-breakup project
+
+The pre-Transformer architecture is like **TextTiling** — constrained by locality, sliding a window through text sequentially, only seeing what's nearby. Information degrades with distance.
+
+Attention is more like **HDBSCAN** — looks at all data points at once and finds structure based on actual relationships, not position. A word at the end of a document can directly attend to a word at the beginning with no degradation.
+
+In the friend-breakup project, TextTiling (sequential, local) and HDBSCAN (global, relational) reached the same shape. That's a nice result — but when they disagree, the global method is the one you trust more. Same reason Transformers replaced RNNs.
+
 ### Don't bother with
 
 **SOC 2** — Compliance certification for businesses. Just means "some industries legally can't send data to cloud APIs," which is why local models matter for them.
